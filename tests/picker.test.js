@@ -214,6 +214,58 @@ test('pool does not mutate original array', () => {
     assert.strictEqual(items.length, 2, 'original array should be unchanged');
 });
 
+test('back returns previous question', () => {
+    const pool = createPool([{id: 1}, {id: 2}, {id: 3}]);
+    const first = pool.pick();
+    const second = pool.pick();
+    assert(pool.canGoBack);
+    const back = pool.back();
+    assert.strictEqual(back, first);
+});
+
+test('back returns null at beginning', () => {
+    const pool = createPool([{id: 1}]);
+    pool.pick();
+    assert(!pool.canGoBack);
+    assert.strictEqual(pool.back(), null);
+});
+
+test('forward returns next after going back', () => {
+    const pool = createPool([{id: 1}, {id: 2}]);
+    const first = pool.pick();
+    const second = pool.pick();
+    pool.back();
+    assert(pool.canGoForward);
+    const fwd = pool.forward();
+    assert.strictEqual(fwd, second);
+});
+
+test('forward returns null at end', () => {
+    const pool = createPool([{id: 1}]);
+    pool.pick();
+    assert(!pool.canGoForward);
+    assert.strictEqual(pool.forward(), null);
+});
+
+test('picking after going back truncates forward history', () => {
+    const pool = createPool([{id: 1}, {id: 2}, {id: 3}]);
+    pool.pick(); // 1
+    pool.pick(); // 2
+    pool.back(); // viewing 1
+    const newPick = pool.pick(); // picks 3, replaces forward history
+    assert(!pool.canGoForward);
+    assert.strictEqual(pool.historyLength, 2);
+});
+
+test('reset clears history', () => {
+    const pool = createPool([{id: 1}]);
+    pool.pick();
+    assert.strictEqual(pool.historyLength, 1);
+    pool.reset();
+    assert.strictEqual(pool.historyLength, 0);
+    assert(!pool.canGoBack);
+});
+
 test('multiple resets work correctly', () => {
     const pool = createPool([{q: 'x'}]);
     pool.pick();

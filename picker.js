@@ -66,19 +66,41 @@ function weekLabel(dirname) {
 function createPool(questions) {
     const all = [...questions];
     let remaining = [...questions];
+    let history = [];
+    let historyIndex = -1;
 
     return {
         pick() {
             if (remaining.length === 0) return null;
             const index = Math.floor(Math.random() * remaining.length);
-            return remaining.splice(index, 1)[0];
+            const item = remaining.splice(index, 1)[0];
+            // Truncate any forward history if we went back then picked new
+            history = history.slice(0, historyIndex + 1);
+            history.push(item);
+            historyIndex = history.length - 1;
+            return item;
+        },
+        back() {
+            if (historyIndex <= 0) return null;
+            historyIndex--;
+            return history[historyIndex];
+        },
+        forward() {
+            if (historyIndex >= history.length - 1) return null;
+            historyIndex++;
+            return history[historyIndex];
         },
         reset() {
             remaining = [...all];
+            history = [];
+            historyIndex = -1;
         },
         get remaining() { return remaining.length; },
         get total() { return all.length; },
         get isEmpty() { return remaining.length === 0; },
+        get canGoBack() { return historyIndex > 0; },
+        get canGoForward() { return historyIndex < history.length - 1; },
+        get historyLength() { return history.length; },
     };
 }
 

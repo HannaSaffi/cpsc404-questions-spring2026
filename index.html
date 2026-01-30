@@ -15,10 +15,12 @@
         <select id="weekSelect" disabled>
             <option value="">Loading weeks…</option>
         </select>
+        <button id="backBtn" disabled>← Back</button>
         <button id="pickBtn" disabled>Pick a Question</button>
+        <button id="forwardBtn" disabled>Forward →</button>
         <button id="resetBtn" disabled>Reset Pool</button>
         <span class="status" id="status"></span>
-        <div class="keyboard-hint">Space / → = next question &nbsp;·&nbsp; R = reset pool</div>
+        <div class="keyboard-hint">Space / → = next &nbsp;·&nbsp; ← = back &nbsp;·&nbsp; R = reset</div>
     </div>
 
     <div class="question-card" id="card">
@@ -27,7 +29,9 @@
 
     <script>
         const weekSelect = document.getElementById('weekSelect');
+        const backBtn = document.getElementById('backBtn');
         const pickBtn = document.getElementById('pickBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
         const resetBtn = document.getElementById('resetBtn');
         const card = document.getElementById('card');
         const status = document.getElementById('status');
@@ -90,6 +94,8 @@
         function updateStatus() {
             if (!pool) { status.textContent = ''; return; }
             status.textContent = `${pool.remaining} of ${pool.total} remaining`;
+            backBtn.disabled = !pool.canGoBack;
+            forwardBtn.disabled = !pool.canGoForward;
         }
 
         function checkScroll() {
@@ -130,6 +136,18 @@
             }
         }
 
+        function goBack() {
+            if (!pool || !pool.canGoBack) return;
+            showQuestion(pool.back());
+            updateStatus();
+        }
+
+        function goForward() {
+            if (!pool || !pool.canGoForward) return;
+            showQuestion(pool.forward());
+            updateStatus();
+        }
+
         function resetQuestionPool() {
             if (pool) pool.reset();
             updateStatus();
@@ -151,13 +169,18 @@
             }
         });
 
+        backBtn.addEventListener('click', goBack);
         pickBtn.addEventListener('click', pickRandom);
+        forwardBtn.addEventListener('click', goForward);
         resetBtn.addEventListener('click', resetQuestionPool);
 
         document.addEventListener('keydown', (e) => {
             if (e.target === weekSelect) return;
 
-            if ((e.key === ' ' || e.key === 'ArrowRight') && !pickBtn.disabled) {
+            if (e.key === 'ArrowLeft' && !backBtn.disabled) {
+                e.preventDefault();
+                goBack();
+            } else if ((e.key === ' ' || e.key === 'ArrowRight') && !pickBtn.disabled) {
                 e.preventDefault();
                 pickRandom();
             } else if ((e.key === 'r' || e.key === 'R') && !resetBtn.disabled) {
