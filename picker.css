@@ -1,20 +1,55 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Dark mode (default) */
+:root {
+    --bg-main: #1a1a2e;
+    --bg-card: #16213e;
+    --bg-button: #0f3460;
+    --bg-button-hover: #533483;
+    --bg-pick: #533483;
+    --bg-pick-hover: #6b44a0;
+    --border-card: #0f3460;
+    --text-main: #e0e0e0;
+    --text-heading: #a0c4ff;
+    --text-muted: #7b8fa1;
+    --text-hint: #556677;
+    --text-done: #ffc107;
+    --text-strong: #a0c4ff;
+}
+
+/* Light mode */
+body.light {
+    --bg-main: #f5f5f5;
+    --bg-card: #ffffff;
+    --bg-button: #e0e0e0;
+    --bg-button-hover: #7c3aed;
+    --bg-pick: #7c3aed;
+    --bg-pick-hover: #6d28d9;
+    --border-card: #d0d0d0;
+    --text-main: #1a1a1a;
+    --text-heading: #4a4a8a;
+    --text-muted: #666666;
+    --text-hint: #888888;
+    --text-done: #b8860b;
+    --text-strong: #4a4a8a;
+}
+
 body {
     font-family: 'Georgia', serif;
-    background: #1a1a2e;
-    color: #e0e0e0;
+    background: var(--bg-main);
+    color: var(--text-main);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem;
+    transition: background 0.3s, color 0.3s;
 }
 
 h1 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    color: #a0c4ff;
+    color: var(--text-heading);
     text-align: center;
 }
 
@@ -36,19 +71,20 @@ select, button {
 }
 
 select {
-    background: #16213e;
-    color: #e0e0e0;
-    border: 2px solid #0f3460;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 2px solid var(--border-card);
 }
 
 button {
-    background: #0f3460;
-    color: #e0e0e0;
-    transition: background 0.2s;
+    background: var(--bg-button);
+    color: var(--text-main);
+    transition: background 0.2s, color 0.2s;
 }
 
 button:hover:not(:disabled) {
-    background: #533483;
+    background: var(--bg-button-hover);
+    color: #fff;
 }
 
 button:disabled {
@@ -64,21 +100,21 @@ button:disabled {
 
 .status {
     font-size: 1rem;
-    color: #7b8fa1;
+    color: var(--text-muted);
     margin-left: 0.5rem;
 }
 
 .keyboard-hint {
     font-size: 0.85rem;
-    color: #556677;
+    color: var(--text-hint);
     margin-top: 0.5rem;
     text-align: center;
     width: 100%;
 }
 
 .question-card {
-    background: #16213e;
-    border: 2px solid #0f3460;
+    background: var(--bg-card);
+    border: 2px solid var(--border-card);
     border-radius: 16px;
     padding: 3rem;
     max-width: 900px;
@@ -87,11 +123,12 @@ button:disabled {
     max-height: 70vh;
     overflow-y: auto;
     position: relative;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .question-card .author {
     font-size: 1rem;
-    color: #7b8fa1;
+    color: var(--text-muted);
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -100,7 +137,7 @@ button:disabled {
 .question-card .content {
     font-size: 1.6rem;
     line-height: 1.6;
-    color: #f0f0f0;
+    color: var(--text-main);
 }
 
 .question-card .content p {
@@ -108,12 +145,12 @@ button:disabled {
 }
 
 .question-card .content strong {
-    color: #a0c4ff;
+    color: var(--text-strong);
 }
 
 .scroll-hint {
     text-align: center;
-    color: #7b8fa1;
+    color: var(--text-muted);
     font-size: 0.9rem;
     padding-top: 0.5rem;
     animation: pulse 2s ease-in-out infinite;
@@ -126,25 +163,42 @@ button:disabled {
 
 .placeholder {
     text-align: center;
-    color: #7b8fa1;
+    color: var(--text-muted);
     font-size: 1.4rem;
     font-style: italic;
 }
 
 .done-message {
     text-align: center;
-    color: #ffc107;
+    color: var(--text-done);
     font-size: 1.4rem;
 }
 
 /* Primary action button stands out */
 #pickBtn {
-    background: #533483;
+    background: var(--bg-pick);
     font-weight: bold;
+    color: #fff;
 }
 
 #pickBtn:hover:not(:disabled) {
-    background: #6b44a0;
+    background: var(--bg-pick-hover);
+}
+
+/* Theme toggle button */
+#themeBtn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: 2px solid var(--border-card);
+    font-size: 1.4rem;
+    padding: 0.4rem 0.6rem;
+    line-height: 1;
+}
+
+#themeBtn:hover {
+    background: var(--bg-card);
 }
 
 @media (max-width: 600px) {

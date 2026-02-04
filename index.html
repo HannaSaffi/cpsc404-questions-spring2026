@@ -10,6 +10,7 @@
 </head>
 <body>
     <h1>CPSC 404 — Discussion Question Picker</h1>
+    <button id="themeBtn" title="Toggle light/dark mode">🌙</button>
 
     <div class="controls">
         <select id="weekSelect" disabled>
@@ -204,6 +205,21 @@
             if (dx > 0 && !backBtn.disabled) goBack();
             else if (dx < 0 && !pickBtn.disabled) pickRandom();
         }, { passive: true });
+
+        // Theme toggle
+        const themeBtn = document.getElementById('themeBtn');
+        function applyTheme(light) {
+            document.body.classList.toggle('light', light);
+            themeBtn.textContent = light ? '☀️' : '🌙';
+            themeBtn.title = light ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+        // Load saved preference (default to dark)
+        applyTheme(localStorage.getItem('theme') === 'light');
+        themeBtn.addEventListener('click', () => {
+            const goLight = !document.body.classList.contains('light');
+            localStorage.setItem('theme', goLight ? 'light' : 'dark');
+            applyTheme(goLight);
+        });
 
         loadWeeks();
     </script>
